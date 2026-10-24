@@ -10,6 +10,7 @@ from base64 import b64decode, b64encode
 from random import randint
 from flask import Flask
 from signal import SIGTERM
+from threading import Thread
 
 from aiogram.utils.serialization import deserialize_telegram_object_to_python
 
@@ -19,7 +20,7 @@ log = None
 flask_heartbeat_task = None
 
 
-async def heartbeat_endpoint(port):
+def heartbeat_endpoint(port):
     try:
         app = Flask("telegram_bridge")
 
@@ -27,8 +28,8 @@ async def heartbeat_endpoint(port):
         def heart_endpoint():
             return f"{format(randint(1, 100000), "0>6")}\nI'm alive"
 
-        app.run(host="0.0.0.0", port=port)
         log.info(f"Heartbeat-эндпоинт запущен на порте {port}.")
+        app.run(host="0.0.0.0", port=port)
     except asyncio.CancelledError:
         pass
 
@@ -68,9 +69,9 @@ async def transfer():
         log.info("Выключение...")
         await client_mqtt.stop_service()
         await tg_client.stop_service()
-        if flask_heartbeat_task is not None:
-            flask_heartbeat_task.cancel()
-            await flask_heartbeat_task
+        # if flask_heartbeat_task is not None:
+        #     flask_heartbeat_task.cancel()
+        #     await flask_heartbeat_task
 
 
 # async def send_telegram_message(message_json, bot):
@@ -99,9 +100,13 @@ async def main():
     await client_mqtt.start_service()
     await tg_client.start_service()
 
-    flask_heartbeat_task = asyncio.create_task(
-        heartbeat_endpoint(settings.flask_port)
-    )
+
+    Thread(target = lambda: heartbeat_endpoint(settings.flask_port),
+            daemon = True).start()
+
+    # flask_heartbeat_task = asyncio.create_task(
+    #     heartbeat_endpoint(settings.flask_port)
+    # )
 
 
     await transfer()

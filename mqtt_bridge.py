@@ -86,7 +86,7 @@ class MqttClient:
 
             error_code = rc[0]
             if error_code == mqtt.MQTT_ERR_SUCCESS:
-                log.debug("")
+                log.debug("MqttClient успешно отправил сообщение")
                 break
             else:
                 retry += 1
