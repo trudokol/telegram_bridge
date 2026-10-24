@@ -10,6 +10,7 @@ class Settings():
     mqtt_port : int | None
     mqtt_username : str | None
     mqtt_password : str | None
+    flask_port : int
     debug : bool
 
 def load_settings() -> Settings:
@@ -21,5 +22,6 @@ def load_settings() -> Settings:
         mqtt_port = int(os.environ.get("MQTT_PORT")) or None,
         mqtt_username = os.environ.get("MQTT_USERNAME") or None,
         mqtt_password = os.environ.get("MQTT_PASSWORD") or None,
+        flask_port = int(os.environ.get("FLASK_PORT")),
         debug = bool(os.environ.get("DEBUG"))
     )
