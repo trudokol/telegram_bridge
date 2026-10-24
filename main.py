@@ -27,7 +27,7 @@ async def heartbeat_endpoint(port):
         def heart_endpoint():
             return f"{format(randint(1, 100000), "0>6")}\nI'm alive"
 
-        app.run(port=port)
+        app.run(host="0.0.0.0", port=port)
         log.info(f"Heartbeat-эндпоинт запущен на порте {port}.")
     except asyncio.CancelledError:
         pass
