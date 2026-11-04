@@ -67,12 +67,15 @@ class TelegramClient:
                             chat_id = data.get("chat_id")
                             text = data.get("text")
                             reply_markup = data.get("reply_markup")
-                            if len(text) <= 4096:
-                                await self.bot.send_message(chat_id=chat_id, text=text, reply_markup=reply_markup)
-                                log.info(f"Для {chat_id} отправлено сообщение" + \
-                                         f"{', reply_markup присутствует.' if reply_markup is not None else '.'}")
+                            if text:
+                                if len(text) <= 4096:
+                                    await self.bot.send_message(chat_id=chat_id, text=text, reply_markup=reply_markup)
+                                    log.info(f"Для {chat_id} отправлено сообщение" + \
+                                            f"{', reply_markup присутствует.' if reply_markup is not None else '.'}")
+                                else:
+                                    log.warning(f"сообщение слишком длинное: {text[:80]}...")
                             else:
-                                log.warning(f"сообщение слишком длинное: {text[:80]}...")
+                                log.warning(f"сообщение не содержит текста")
 
                         # сюда можно прикрутить обработку других типов сообщений
                         
