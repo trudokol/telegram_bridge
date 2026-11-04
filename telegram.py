@@ -124,6 +124,7 @@ class TelegramClient:
                                                  "data" : callback})
             log.info(f"Пришёл CallbackQuery от {callback.from_user.full_name} ({callback.from_user.id}): " + \
                      f"{callback.data if len(callback.data) <= 80 else f'{callback.data[:80]}...'}")
+            callback.answer() # чтобы сбросить индикацию нажатия кнопки
 
 
         self.background_tasks.append(
