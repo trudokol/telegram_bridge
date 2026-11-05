@@ -85,9 +85,6 @@ class MqttClient:
     async def publish_message(self, text):
         loop = asyncio.get_running_loop()
 
-        self._mqttc.subscribe("skasdjhg/errors", qos=2) ### DEBUG
-        self._mqttc.subscribe("skasdjhg/throttle", qos=2) ### DEBUG
-
         retry = 0
         while retry < PUBLISH_MESSAGE_RETRY:
             rc = await loop.run_in_executor(
