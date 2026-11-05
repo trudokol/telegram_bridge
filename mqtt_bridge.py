@@ -10,8 +10,8 @@ log = logging.getLogger(__name__)
 
 PUBLISH_MESSAGE_RETRY = 3
 SUBSCRIBE_TIMEOUT = 15
-MQTT_TOPIC_OUTGOING = "messages/to_home_server"
-MQTT_TOPIC_INCOME = "messages/to_telegram_bridge"
+MQTT_TOPIC_OUTGOING = "skasdjhg/feeds/to-home-server"
+MQTT_TOPIC_INCOME = "skasdjhg/feeds/to-telegram-bridge"
 
 class MqttClient:
     """
