@@ -30,8 +30,17 @@ class MqttClient:
     но я до этого не додумался + мне понравилась идея, чтобы это больше было похоже
     на чёрный ящик, у которого только вход и выход
     """
-    def __init__(self, username, password, host, port):
-        self._mqttc = mqtt.Client(mqtt.CallbackAPIVersion.VERSION2)
+    def __init__(self, username, password, host, port, client_id = None,
+                 mqtt_topic_outgoing = None, mqtt_topic_income = None):
+        global MQTT_TOPIC_INCOME
+        global MQTT_TOPIC_OUTGOING
+
+        if mqtt_topic_outgoing:
+            MQTT_TOPIC_OUTGOING = mqtt_topic_outgoing
+        if mqtt_topic_income:
+            MQTT_TOPIC_INCOME = mqtt_topic_income
+
+        self._mqttc = mqtt.Client(mqtt.CallbackAPIVersion.VERSION2, client_id=client_id)
         self.income_message_queue = deque() # очередь входящих сообщений
         self.outgoing_message_queue = deque() # очередь исходящих сообщений
         self.subscribed = False
