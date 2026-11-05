@@ -104,8 +104,8 @@ async def main():
     await tg_client.start_service()
 
 
-    # Thread(target = lambda: heartbeat_endpoint(settings.flask_port),
-    #         daemon = True).start()
+    Thread(target = lambda: heartbeat_endpoint(settings.flask_port),
+            daemon = True).start()
 
     # flask_heartbeat_task = asyncio.create_task(
     #     heartbeat_endpoint(settings.flask_port)
