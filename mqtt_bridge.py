@@ -52,10 +52,10 @@ class MqttClient:
                 
 
     def on_connect(self, client, userdata, flags, reason_code, properties):
-        log.info("MQTT подключён")
+        log.info(f"MQTT подключён, reason_code: {reason_code}")
 
     def on_disconnect(self, client, userdata, disconnect_flags, reason_code, properties):
-        log.info("MQTT отключён")
+        log.info(f"MQTT отключён, reason_code: {reason_code}")
         self.subscribed = False
 
     def on_message(self, client, userdata, message):
@@ -84,6 +84,9 @@ class MqttClient:
 
     async def publish_message(self, text):
         loop = asyncio.get_running_loop()
+
+        self._mqttc.subscribe("skasdjhg/errors", qos=2) ### DEBUG
+        self._mqttc.subscribe("skasdjhg/throttle", qos=2) ### DEBUG
 
         retry = 0
         while retry < PUBLISH_MESSAGE_RETRY:
