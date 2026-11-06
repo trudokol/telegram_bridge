@@ -10,6 +10,7 @@ from aiogram import Bot, Dispatcher
 from aiogram.client.default import DefaultBotProperties
 from aiogram.enums import ParseMode
 from aiogram.types import Message, CallbackQuery
+from aiogram.types import InlineKeyboardMarkup
 
 log = logging.getLogger("telegram_bridge")
 
@@ -67,6 +68,9 @@ class TelegramClient:
                             chat_id = data.get("chat_id")
                             text = data.get("text")
                             reply_markup = data.get("reply_markup")
+                            if reply_markup:
+                                reply_markup = InlineKeyboardMarkup.model_validate(reply_markup)
+                                
                             if text:
                                 if len(text) <= 4096:
                                     await self.bot.send_message(chat_id=chat_id, text=text, reply_markup=reply_markup)
