@@ -4,7 +4,7 @@ from collections import deque
 import asyncio
 import time
 
-from config import Settings
+from encryption import Encryption
 
 log = logging.getLogger(__name__)
 
@@ -31,7 +31,8 @@ class MqttClient:
     на чёрный ящик, у которого только вход и выход
     """
     def __init__(self, username, password, host, port, client_id = None,
-                 mqtt_topic_outgoing = None, mqtt_topic_income = None):
+                 mqtt_topic_outgoing = None, mqtt_topic_income = None,
+                 key_phrase = None):
         global MQTT_TOPIC_INCOME
         global MQTT_TOPIC_OUTGOING
 
@@ -39,6 +40,10 @@ class MqttClient:
             MQTT_TOPIC_OUTGOING = mqtt_topic_outgoing
         if mqtt_topic_income:
             MQTT_TOPIC_INCOME = mqtt_topic_income
+
+        self.key_phrase = key_phrase
+        if key_phrase:
+            self.encryption = Encryption(key_phrase)
 
         self._mqttc = mqtt.Client(mqtt.CallbackAPIVersion.VERSION2, client_id=client_id)
         self.income_message_queue = deque() # очередь входящих сообщений
@@ -60,6 +65,8 @@ class MqttClient:
 
     def on_message(self, client, userdata, message):
         text = message.payload.decode()
+        if self.key_phrase:
+            text = self.encryption.decrypt(text)
         log.info("MQTT: пришло сообщение:" + text[:80])
         self.income_message_queue.append(text)
 
@@ -73,6 +80,9 @@ class MqttClient:
         return True
 
     def send_message(self, text):
+        if self.key_phrase:
+            text = self.encryption.encrypt(text)
+            
         self.outgoing_message_queue.append(text)
 
     def get_incoming_message(self) -> str | None:

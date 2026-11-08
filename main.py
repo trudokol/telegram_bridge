@@ -97,7 +97,8 @@ async def main():
                              settings.mqtt_broker, settings.mqtt_port,
                              client_id=settings.client_id,
                              mqtt_topic_income=settings.mqtt_topic_income,
-                             mqtt_topic_outgoing=settings.mqtt_topic_outgoing)
+                             mqtt_topic_outgoing=settings.mqtt_topic_outgoing,
+                             key_phrase=settings.key_phrase)
     tg_client = TelegramClient(settings.telegram_token)
 
     await client_mqtt.start_service()
