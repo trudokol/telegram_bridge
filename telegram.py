@@ -64,6 +64,9 @@ class TelegramClient:
                         self.outcoming_messages_queue.popleft()
 
                         mtype, data = query.get("message_type"), query.get("data")
+                        log.debug(f"получено сообщение для отправки, mtype = {mtype} \
+                                  data = {data if data else "None"}")
+
                         if mtype == message_type.text:
                             chat_id = data.get("chat_id")
                             text = data.get("text")
@@ -89,7 +92,10 @@ class TelegramClient:
         
         
         except asyncio.CancelledError:
+            log.info("TelegramClient: sender got CancelledError")
             pass
+        except Exception as error:
+            log.error(error)
 
 
     def is_income_queue_empty(self) -> bool:
@@ -122,7 +128,7 @@ class TelegramClient:
         def on_message(message : Message):
             self.incoming_messages_queue.append({"message_type" : message_type.message,
                                                  "data" : message})
-            log.info(f"Пришло сообщение от {message.from_user.full_name} ({message.from_user.id}): " + \
+            log.debug(f"Пришло сообщение от {message.from_user.full_name} ({message.from_user.id}): " + \
                      f"{message.text if len(message.text) <= 80 else f'{message.text[:80]}...'}")
 
         @self.dp.callback_query()
