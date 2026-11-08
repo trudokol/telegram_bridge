@@ -14,10 +14,10 @@ class Encryption:
 
     def encrypt(self, text : str) -> str:
         salt, nonce = os.urandom(16), os.urandom(12)
-        ct = AESGCM(self._key(self.key_phrase, salt)).encrypt(nonce, text.encode(), None)
+        ct = AESGCM(self._key(salt)).encrypt(nonce, text.encode(), None)
         return base64.urlsafe_b64encode(salt + nonce + ct).decode()
 
     def decrypt(self, token : str) -> str:
         raw = base64.urlsafe_b64decode(token)
         salt, nonce, ct = raw[:16], raw[16:28], raw[28:]
-        return AESGCM(self._key(self.key_phrase, salt)).decrypt(nonce, ct, None).decode()
+        return AESGCM(self._key(salt)).decrypt(nonce, ct, None).decode()
